@@ -1,0 +1,144 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [dev, main]
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ENVIRONMENT: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout Repo 
+        uses: actions/checkout@v6
+        with:
+          path: project
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Pull files from S3
+        run: aws s3 sync s3://${{ vars.S3_BUCKET_NAME }}/${{ vars.S3_PUBLISHED_DATA_DIR }} project/${{ vars.INPUT_DATA_DIR }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install Python dependencies
+        run: uv sync
+        working-directory: project/jobs
+
+      - name: Generate JSON dataset for website
+        run: uv run python generate_data.py
+        working-directory: project/jobs
+        env:
+          INPUT_DATA_DIR: project/${{ vars.INPUT_DATA_DIR }}
+          OUTPUT_DATA_DIR: project/${{ vars.OUTPUT_DATA_DIR }}
+          OUTPUT_FILE_NAME: ${{ vars.OUTPUT_FILE_NAME }}
+
+      - name: Cache dataset 
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-data-${{ github.ref_name }}
+          path: project/${{ vars.OUTPUT_DATA_DIR }}/${{ vars.OUTPUT_FILE_NAME }}
+          retention-days: 1
+
+  build:
+    needs: fetch-data
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: project
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: project/web
+
+      - name: Restore Next.js build cache
+        uses: actions/cache@v5
+        with:
+          path: project/web/.next/cache
+          key: nextjs-${{ env.ENVIRONMENT }}-${{ runner.os }}-${{ hashFiles('project/web/pnpm-lock.yaml') }}-${{ hashFiles('project/web/**/*.ts', 'project/web/**/*.tsx') }}
+          restore-keys: |
+            nextjs-${{ env.ENVIRONMENT }}-${{ runner.os }}-
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-data-${{ github.ref_name }}
+          path: project/${{ vars.OUTPUT_DATA_DIR }}/${{ vars.OUTPUT_FILE_NAME }}
+
+      - name: Build static website
+        run: pnpm build
+        working-directory: project/web
+        env:
+          DATA_FILE_PATH: project/${{ vars.OUTPUT_DATA_DIR }}/${{ vars.OUTPUT_FILE_NAME }}
+
+      - name: Validate build output
+        run: |
+          test -d out || (echo "Build output directory 'out' not found" && exit 1)
+          PAGE_COUNT=$(find out -name '*.html' | wc -l)
+          echo "Built $PAGE_COUNT HTML pages"
+          test "$PAGE_COUNT" -gt 0 || (echo "No HTML pages found in output" && exit 1)
+        working-directory: project/web
+
+      - name: Generate Pagefind search index
+        run: pnpm exec pagefind --site out --output-path out/pagefind
+        working-directory: project/web
+
+      - name: Validate Pagefind output
+        run: |
+          test -d out/pagefind || (echo "Pagefind output directory not found" && exit 1)
+          test -f out/pagefind/pagefind.js || (echo "pagefind.js not found" && exit 1)
+        working-directory: project/web
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: static-site-${{ github.ref_name }}
+          path: project/web/out/
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: project
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: static-site-${{ github.ref_name }}
+          path: project/web/out/
+
+      - name: Deploy to Cloudflare Workers
+        run: npx wrangler@^4.34.0 deploy --env ${{ env.ENVIRONMENT }}
+        working-directory: project/web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
