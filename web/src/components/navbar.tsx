@@ -13,12 +13,13 @@ function NavLink({ label }: NavLinkProps) {
       href="#"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className="font-bold"
       style={{
         fontFamily: "'DM Mono', monospace",
         fontSize: "0.72rem",
         letterSpacing: "0.14em",
         textTransform: "uppercase",
-        color: hovered ? "#6ee7b7" : "rgba(110,231,179,0.6)",
+        color: hovered ? "#c3ffe7" : "#6ee7b7",
         textDecoration: "none",
         textShadow: hovered ? "0 0 10px rgba(110,231,179,0.35)" : "none",
         transition: "color 0.2s, text-shadow 0.2s",
@@ -30,7 +31,9 @@ function NavLink({ label }: NavLinkProps) {
       <span
         style={{
           position: "absolute",
-          bottom: 0, left: 0, right: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
           height: "1px",
           background: "#10b981",
           transform: hovered ? "scaleX(1)" : "scaleX(0)",
@@ -47,7 +50,7 @@ export function Navbar() {
   return (
     <nav
       style={{ fontFamily: "'DM Mono', monospace" }}
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-12 h-16 bg-transparent"
+      className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-12 h-16 bg-transparent"
     >
       <a
         href="#"

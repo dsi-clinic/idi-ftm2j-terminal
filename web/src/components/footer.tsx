@@ -5,16 +5,22 @@ import { useNetworkCanvas } from "../hooks/use-network-canvas";
 
 const FOOTER_LINKS = [
   {
-    heading: "Investigations",
-    links: ["Active Cases", "Money Trails", "Shell Companies", "Offshore Leaks", "Asset Trackers"],
+    heading: "IDI Tool Suite",
+    links: [
+      "DeBIT",
+      "Shareholder Tracker",
+      "Commercial Debt Tracker",
+      "Follow the Money Toolkit",
+    ],
   },
   {
-    heading: "Evidence",
-    links: ["Document Vault", "Data Sources", "Court Filings", "Whistleblowers", "Tip Line"],
+    heading: "Site Map",
+    links: ["Home", "Company Search", "About/Methodology", "FAQ", "Downloads"],
   },
   {
-    heading: "About",
-    links: ["Our Mission", "Newsroom", "Methodology", "Press Freedom", "Contact"],
+    heading: "Acknowledgments",
+    links: [],
+    text: "This project was built by Inclusive Development International in collaboration with the University of Chicago Data Science Institute, with support from the Charles Stewart Mott Foundation.",
   },
 ];
 
@@ -41,7 +47,17 @@ function FooterLink({ label }: FooterLinkProps) {
         textShadow: hovered ? "0 0 12px rgba(110,231,179,0.4)" : "none",
       }}
     >
-      <span style={{ color: hovered ? "#10b981" : "#065f46", fontSize: "1rem", transition: "color 0.2s, transform 0.2s", transform: hovered ? "translateX(3px)" : "translateX(0)", display: "inline-block" }}>›</span>
+      <span
+        style={{
+          color: hovered ? "#10b981" : "#065f46",
+          fontSize: "1rem",
+          transition: "color 0.2s, transform 0.2s",
+          transform: hovered ? "translateX(3px)" : "translateX(0)",
+          display: "inline-block",
+        }}
+      >
+        ›
+      </span>
       {label}
     </a>
   );
@@ -58,17 +74,28 @@ function SocialBtn({ path }: SocialBtnProps) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        width: 32, height: 32,
+        width: 32,
+        height: 32,
         border: `1px solid ${hovered ? "#10b981" : "rgba(52,211,153,0.18)"}`,
         borderRadius: 2,
         background: hovered ? "rgba(16,185,129,0.15)" : "rgba(16,185,129,0.08)",
-        display: "flex", alignItems: "center", justifyContent: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         cursor: "pointer",
         boxShadow: hovered ? "0 0 12px rgba(16,185,129,0.25)" : "none",
         transition: "all 0.2s",
       }}
     >
-      <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, fill: hovered ? "#34d399" : "rgba(52,211,153,0.55)", transition: "fill 0.2s" }}>
+      <svg
+        viewBox="0 0 24 24"
+        style={{
+          width: 14,
+          height: 14,
+          fill: hovered ? "#34d399" : "rgba(52,211,153,0.55)",
+          transition: "fill 0.2s",
+        }}
+      >
         {path}
       </svg>
     </div>
@@ -78,81 +105,172 @@ function SocialBtn({ path }: SocialBtnProps) {
 export function Footer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useNetworkCanvas(canvasRef, {
-    nodeCount: 60, speed: 0.35, linkDist: 140, mouseDist: 160, edgeAlpha: 0.55,
+    nodeCount: 60,
+    speed: 0.35,
+    linkDist: 140,
+    mouseDist: 160,
+    edgeAlpha: 0.55,
     vignette: ["rgba(2,44,34,0)", "rgba(2,28,18,0.55)"],
   });
 
   return (
     <footer
       className="relative overflow-hidden"
-      style={{ background: "#022c22", fontFamily: "'DM Mono', monospace" }}
+      style={{ background: "#000000", fontFamily: "'DM Mono', monospace" }}
     >
       {/* Top border glow */}
       <div
         className="absolute top-0 left-0 right-0"
-        style={{ height: "1px", background: "linear-gradient(90deg, transparent 0%, #10b981 30%, #6ee7b7 50%, #10b981 70%, transparent 100%)", zIndex: 10 }}
+        style={{
+          height: "1px",
+          background:
+            "linear-gradient(90deg, transparent 0%, #10b981 30%, #6ee7b7 50%, #10b981 70%, transparent 100%)",
+          zIndex: 10,
+        }}
       />
-
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
 
       {/* Main grid */}
       <div
         className="relative mx-auto"
-        style={{ zIndex: 5, padding: "64px 72px 40px", display: "grid", gridTemplateColumns: "1.6fr 1fr 1fr 1fr", gap: "48px", maxWidth: "1280px" }}
+        style={{
+          zIndex: 5,
+          padding: "64px 72px 40px",
+          display: "grid",
+          gridTemplateColumns: "1.6fr 1fr 1fr 1fr",
+          gap: "48px",
+          maxWidth: "1280px",
+        }}
       >
         {/* Brand */}
         <div>
           <div className="flex items-center gap-3 mb-5">
-            <div style={{ width: 36, height: 36 }}>
-              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ filter: "drop-shadow(0 0 8px #10b981)" }}>
-                <polygon points="20,2 36,11 36,29 20,38 4,29 4,11" stroke="#34d399" strokeWidth="1.5" fill="rgba(16,185,129,0.1)" />
-                <polygon points="20,8 30,14 30,26 20,32 10,26 10,14" stroke="#10b981" strokeWidth="1" fill="rgba(16,185,129,0.12)" />
-                <circle cx="20" cy="20" r="3.5" fill="#34d399" />
-              </svg>
-            </div>
-            <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "1.4rem", color: "#6ee7b7", letterSpacing: "-0.02em", textShadow: "0 0 20px rgba(110,231,179,0.4)" }}>
-              TRAILHEAD
+            <span
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 800,
+                fontSize: "1.4rem",
+                color: "#6ee7b7",
+                letterSpacing: "-0.02em",
+                textShadow: "0 0 20px rgba(110,231,179,0.4)",
+              }}
+            >
+              FTM2J
             </span>
           </div>
-          <p style={{ fontSize: "0.72rem", color: "rgba(52,211,153,0.55)", lineHeight: 1.7, maxWidth: 240, letterSpacing: "0.03em" }}>
-            Exposing hidden financial networks. Mapping the money. Demanding accountability.
+          <p
+            style={{
+              fontSize: "0.72rem",
+              color: "rgba(52,211,153,0.55)",
+              lineHeight: 1.7,
+              maxWidth: 240,
+              letterSpacing: "0.03em",
+            }}
+          >
+            Exposing hidden financial networks. Mapping the money. Demanding
+            accountability.
           </p>
           <div
             className="inline-flex items-center gap-2 mt-6"
-            style={{ padding: "6px 14px", border: "1px solid rgba(52,211,153,0.18)", borderRadius: 2, background: "rgba(16,185,129,0.08)", fontSize: "0.65rem", color: "#34d399", letterSpacing: "0.12em", textTransform: "uppercase" }}
+            style={{
+              padding: "6px 14px",
+              border: "1px solid rgba(52,211,153,0.18)",
+              borderRadius: 2,
+              background: "rgba(16,185,129,0.08)",
+              fontSize: "0.65rem",
+              color: "#34d399",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
           >
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", boxShadow: "0 0 8px #10b981", animation: "pulse 2.4s ease-in-out infinite" }} />
-            Investigations ongoing
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "#10b981",
+                boxShadow: "0 0 8px #10b981",
+                animation: "pulse 2.4s ease-in-out infinite",
+              }}
+            />
+            Last Updated Mar 6, 2026 09:30AM CT
           </div>
         </div>
 
         {/* Link columns */}
-        {FOOTER_LINKS.map(({ heading, links }) => (
+        {FOOTER_LINKS.map(({ heading, links, text }) => (
           <div key={heading}>
-            <h4 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#10b981", marginBottom: 20, paddingBottom: 10, borderBottom: "1px solid rgba(52,211,153,0.18)" }}>
+            <h4
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 700,
+                fontSize: "0.65rem",
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "#10b981",
+                marginBottom: 20,
+                paddingBottom: 10,
+                borderBottom: "1px solid rgba(52,211,153,0.18)",
+              }}
+            >
               {heading}
             </h4>
-            <ul className="flex flex-col gap-2 list-none">
-              {links.map((link) => (
-                <li key={link}><FooterLink label={link} /></li>
-              ))}
-            </ul>
+            {text ? (
+              <p
+                style={{
+                  fontSize: "0.7rem",
+                  color: "rgba(110,231,179,0.55)",
+                  lineHeight: 1.8,
+                  letterSpacing: "0.03em",
+                }}
+              >
+                {text}
+              </p>
+            ) : (
+              <ul className="flex flex-col gap-2 list-none">
+                {links.map((link) => (
+                  <li key={link}>
+                    <FooterLink label={link} />
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ))}
       </div>
 
       {/* Divider */}
-      <div className="relative mx-auto" style={{ zIndex: 5, maxWidth: 1280, padding: "0 72px" }}>
-        <hr style={{ border: "none", height: 1, background: "linear-gradient(90deg, transparent, rgba(52,211,153,0.18) 20%, rgba(52,211,153,0.18) 80%, transparent)" }} />
+      <div
+        className="relative mx-auto"
+        style={{ zIndex: 5, maxWidth: 1280, padding: "0 72px" }}
+      >
+        <hr
+          style={{
+            border: "none",
+            height: 1,
+            background:
+              "linear-gradient(90deg, transparent, rgba(52,211,153,0.18) 20%, rgba(52,211,153,0.18) 80%, transparent)",
+          }}
+        />
       </div>
 
       {/* Bottom bar */}
       <div
         className="relative mx-auto flex flex-wrap items-center justify-between"
-        style={{ zIndex: 5, maxWidth: 1280, padding: "24px 72px 36px", gap: 16 }}
+        style={{
+          zIndex: 5,
+          maxWidth: 1280,
+          padding: "24px 72px 36px",
+          gap: 16,
+        }}
       >
-        <span style={{ fontSize: "0.68rem", color: "rgba(52,211,153,0.35)", letterSpacing: "0.06em" }}>
-          © 2026 Trailhead Investigations — Independent. Unfunded. Unsilenced.
+        <span
+          style={{
+            fontSize: "0.68rem",
+            color: "rgba(52,211,153,0.75)",
+            letterSpacing: "0.06em",
+          }}
+        >
+          © 2026 Inclusive Development International. All rights reserved.
         </span>
         <div className="flex gap-3">
           {[
@@ -164,10 +282,24 @@ export function Footer() {
           ))}
         </div>
         <div className="flex gap-5">
-          {["Privacy", "Terms", "Cookies"].map((l) => (
-            <a key={l} href="#" style={{ fontSize: "0.65rem", color: "rgba(52,211,153,0.3)", textDecoration: "none", letterSpacing: "0.08em", transition: "color 0.2s" }}
-              onMouseEnter={(e) => ((e.target as HTMLAnchorElement).style.color = "#34d399")}
-              onMouseLeave={(e) => ((e.target as HTMLAnchorElement).style.color = "rgba(52,211,153,0.3)")}
+          {["Privacy", "Terms & Conditions"].map((l) => (
+            <a
+              key={l}
+              href="#"
+              style={{
+                fontSize: "0.65rem",
+                color: "rgba(52,211,153,0.7)",
+                textDecoration: "none",
+                letterSpacing: "0.08em",
+                transition: "color 0.2s",
+              }}
+              onMouseEnter={(e) =>
+                ((e.target as HTMLAnchorElement).style.color = "#34d399")
+              }
+              onMouseLeave={(e) =>
+                ((e.target as HTMLAnchorElement).style.color =
+                  "rgba(52,211,153,0.7)")
+              }
             >
               {l}
             </a>

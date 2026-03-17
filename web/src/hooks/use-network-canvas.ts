@@ -81,7 +81,7 @@ export function useNetworkCanvas(
           if (dist < linkDist) {
             ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
             ctx.strokeStyle = `rgba(16,185,129,${(1 - dist / linkDist) * edgeAlpha})`;
-            ctx.lineWidth = 2.6; ctx.stroke();
+            ctx.lineWidth = 1.6; ctx.stroke();
           }
         }
       }
@@ -91,7 +91,7 @@ export function useNetworkCanvas(
         if (dist < mouseDist) {
           ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(mouse.x, mouse.y);
           ctx.strokeStyle = `rgba(110,231,179,${(1 - dist / mouseDist) * 0.9})`;
-          ctx.lineWidth = 2.8; ctx.stroke();
+          ctx.lineWidth = 1.8; ctx.stroke();
         }
       }
       for (const n of nodes) {

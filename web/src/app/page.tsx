@@ -4,7 +4,7 @@ import { Footer } from "../components/footer";
 
 export default function Landing() {
   return (
-    <div style={{ background: "#000", minHeight: "100vh" }}>
+    <div style={{ background: "#000", minHeight: "100vh", position: "relative" }}>
       <Navbar />
       <Hero />
       <Footer />
