@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useNetworkCanvas } from "../hooks/use-network-canvas";
 import { SkylineSVG } from "./skyline-svg";
+import { SearchAutocomplete } from "./search-autocomplete";
 
 const STATS = [
   { num: "4.2M+", label: "SEC documents indexed" },
@@ -13,8 +14,6 @@ const STATS = [
 
 export function Hero() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [query, setQuery] = useState("");
-  const [focused, setFocused] = useState(false);
 
   useNetworkCanvas(canvasRef, {
     nodeCount: 25,
@@ -27,8 +26,8 @@ export function Hero() {
 
   return (
     <section
-      className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden bg-black"
-      style={{ padding: "80px 24px" }}
+      className="relative w-full min-h-screen flex flex-col items-center justify-start overflow-hidden bg-black"
+      style={{ padding: "120px 24px 80px" }}
     >
       <SkylineSVG />
 
@@ -126,97 +125,13 @@ export function Hero() {
         {/* Search */}
         <div
           className="w-full"
-          style={{ animation: "fadeSlideDown 1s 0.35s ease both" }}
+          style={{
+            animation: "fadeSlideDown 1s 0.35s ease both",
+            position: "relative",
+            zIndex: 10,
+          }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              border: focused
-                ? "1px solid #10b981"
-                : "1px solid rgba(16,185,129,0.4)",
-              background: "rgba(0,0,0,0.7)",
-              backdropFilter: "blur(12px)",
-              boxShadow: focused
-                ? "0 0 0 1px #10b981, 0 0 40px rgba(16,185,129,0.15)"
-                : "none",
-              transition: "border-color 0.2s, box-shadow 0.2s",
-            }}
-          >
-            <span
-              style={{
-                padding: "0 20px",
-                color: "#10b981",
-                borderRight: "1px solid rgba(16,185,129,0.25)",
-                height: "58px",
-                display: "flex",
-                alignItems: "center",
-                userSelect: "none",
-                filter: "drop-shadow(0 0 6px rgba(16,185,129,0.5))",
-              }}
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{ width: 18, height: 18 }}
-              >
-                <circle cx="11" cy="11" r="7" />
-                <line x1="16.5" y1="16.5" x2="22" y2="22" />
-              </svg>
-            </span>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              placeholder="Search for companies by name, ticker, PermID, or other identifier"
-              style={{
-                flex: 1,
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                padding: "0 24px",
-                height: "58px",
-                fontFamily: "'DM Mono', monospace",
-                fontSize: "0.95rem",
-                color: "#6ee7b7",
-                caretColor: "#10b981",
-              }}
-            />
-            <button
-              className="font-bold"
-              style={{
-                height: "58px",
-                padding: "0 28px",
-                background: "#10b981",
-                border: "none",
-                cursor: "pointer",
-                fontFamily: "'DM Mono', monospace",
-                fontSize: "0.7rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color: "#000",
-                whiteSpace: "nowrap",
-                transition: "background 0.2s, box-shadow 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLButtonElement).style.background = "#34d399";
-                (e.target as HTMLButtonElement).style.boxShadow =
-                  "0 0 24px rgba(16,185,129,0.4)";
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLButtonElement).style.background = "#10b981";
-                (e.target as HTMLButtonElement).style.boxShadow = "none";
-              }}
-            >
-              Investigate
-            </button>
-          </div>
+          <SearchAutocomplete />
         </div>
 
         {/* Stats */}
