@@ -4,19 +4,16 @@ import { useState, useEffect } from "react";
 // Application imports
 import type { PagefindModule, PagefindSearchResult } from "@/types/pagefind";
 
-type SearchResult = {
-  metadata: Record<string, string>;
-  url: string;
-};
-
-type UseSiteSearchReturn = {
+type UseSiteSearchReturn<T> = {
   handleSearch: (query: string) => Promise<void>;
-  results: SearchResult[];
+  results: T[];
 };
 
-export const useSiteSearch = (maxResults: number): UseSiteSearchReturn => {
+export const useSiteSearch = <T>(
+  maxResults: number,
+): UseSiteSearchReturn<T> => {
   const [pagefind, setPagefind] = useState<PagefindModule | null>(null);
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [results, setResults] = useState<T[]>([]);
 
   useEffect(() => {
     async function load() {
@@ -34,14 +31,9 @@ export const useSiteSearch = (maxResults: number): UseSiteSearchReturn => {
     if (!pagefind || !query) return;
     const search = await pagefind.search(query);
     const topResults = await Promise.all(
-      search.results
-        .slice(0, maxResults)
-        .map((r: PagefindSearchResult) => r.data()),
+      search.results.map((r: PagefindSearchResult) => r.data()),
     );
-    const mappedResults = topResults.map((result) => ({
-      metadata: result.meta,
-      url: result.url,
-    }));
+    const mappedResults = topResults.map((result) => result.meta as T);
     setResults(mappedResults);
   };
 

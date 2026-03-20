@@ -3,359 +3,37 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+import { useSiteSearch } from "@/hooks/use-site-search";
+import { useRouter } from "next/navigation";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Company {
   ticker: string;
-  name: string;
-  country: string;
+  companyName: string;
+  countryName: string;
   countryCode: string;
   sectors: string[];
   permId: string;
   subsidiaries: string[];
 }
 
-const MOCK_COMPANIES: Company[] = [
-  {
-    ticker: "AAPL",
-    name: "Apple Inc.",
-    country: "United States",
-    countryCode: "US",
-    sectors: ["Technology", "Consumer Electronics"],
-    permId: "4295905573",
-    subsidiaries: [
-      "Apple Retail LLC",
-      "Beats Electronics LLC",
-      "Shazam Entertainment Ltd.",
-      "Intel Mobile Communications",
-    ],
-  },
-  {
-    ticker: "MSFT",
-    name: "Microsoft Corporation",
-    country: "United States",
-    countryCode: "US",
-    sectors: ["Technology", "Cloud Services"],
-    permId: "4295907168",
-    subsidiaries: [
-      "LinkedIn Corporation",
-      "GitHub Inc.",
-      "Activision Blizzard Inc.",
-      "Nuance Communications",
-    ],
-  },
-  {
-    ticker: "AMZN",
-    name: "Amazon.com Inc.",
-    country: "United States",
-    countryCode: "US",
-    sectors: ["E-Commerce", "Cloud Services"],
-    permId: "4295904174",
-    subsidiaries: [
-      "Amazon Web Services Inc.",
-      "Whole Foods Market Inc.",
-      "Twitch Interactive Inc.",
-      "Zappos.com LLC",
-    ],
-  },
-  {
-    ticker: "TSLA",
-    name: "Tesla, Inc.",
-    country: "United States",
-    countryCode: "US",
-    sectors: ["Automotive", "Clean Energy"],
-    permId: "4297091700",
-    subsidiaries: [
-      "Tesla Motors Ltd.",
-      "SolarCity Corporation",
-      "Maxwell Technologies Inc.",
-    ],
-  },
-  {
-    ticker: "GOOG",
-    name: "Alphabet Inc.",
-    country: "United States",
-    countryCode: "US",
-    sectors: ["Technology", "Digital Advertising"],
-    permId: "5030853586",
-    subsidiaries: [
-      "Google LLC",
-      "YouTube LLC",
-      "DeepMind Technologies Ltd.",
-      "Waymo LLC",
-      "Verily Life Sciences LLC",
-    ],
-  },
-  {
-    ticker: "META",
-    name: "Meta Platforms Inc.",
-    country: "United States",
-    countryCode: "US",
-    sectors: ["Social Media", "Technology"],
-    permId: "4298007433",
-    subsidiaries: ["Instagram LLC", "WhatsApp Inc.", "Oculus VR LLC"],
-  },
-  {
-    ticker: "BHP",
-    name: "BHP Group Limited",
-    country: "Australia",
-    countryCode: "AU",
-    sectors: ["Mining", "Natural Resources"],
-    permId: "4295402839",
-    subsidiaries: [
-      "BHP Billiton Coal Pty Ltd.",
-      "BHP Iron Ore Pty Ltd.",
-      "Olympic Dam Corporation Pty Ltd.",
-    ],
-  },
-  {
-    ticker: "RIO",
-    name: "Rio Tinto plc",
-    country: "United Kingdom",
-    countryCode: "GB",
-    sectors: ["Mining", "Natural Resources"],
-    permId: "4295402660",
-    subsidiaries: [
-      "Rio Tinto Alcan Inc.",
-      "Rio Tinto Iron Ore Pty Ltd.",
-      "Turquoise Hill Resources Ltd.",
-      "Energy Resources of Australia Ltd.",
-    ],
-  },
-  {
-    ticker: "NESN",
-    name: "Nestlé S.A.",
-    country: "Switzerland",
-    countryCode: "CH",
-    sectors: ["Food & Beverage", "Consumer Staples"],
-    permId: "4295860809",
-    subsidiaries: [
-      "Nespresso S.A.",
-      "Purina PetCare Company",
-      "Gerber Products Company",
-      "San Pellegrino S.p.A.",
-    ],
-  },
-  {
-    ticker: "TM",
-    name: "Toyota Motor Corporation",
-    country: "Japan",
-    countryCode: "JP",
-    sectors: ["Automotive", "Manufacturing"],
-    permId: "4295866664",
-    subsidiaries: [
-      "Lexus International Co.",
-      "Daihatsu Motor Co. Ltd.",
-      "Hino Motors Ltd.",
-      "Toyota Financial Services Corporation",
-    ],
-  },
-  {
-    ticker: "VALE",
-    name: "Vale S.A.",
-    country: "Brazil",
-    countryCode: "BR",
-    sectors: ["Mining", "Iron Ore"],
-    permId: "4295404590",
-    subsidiaries: [
-      "Vale Canada Limited",
-      "Vale International S.A.",
-      "Companhia Coreano-Brasileira de Pelotização",
-    ],
-  },
-  {
-    ticker: "GLEN",
-    name: "Glencore plc",
-    country: "United Kingdom",
-    countryCode: "GB",
-    sectors: ["Mining", "Trading"],
-    permId: "5037808688",
-    subsidiaries: [
-      "Glencore Coal Pty Ltd.",
-      "Prodeco S.A.",
-      "Katanga Mining Limited",
-      "Mutanda Mining SARL",
-    ],
-  },
-  {
-    ticker: "SHEL",
-    name: "Shell plc",
-    country: "United Kingdom",
-    countryCode: "GB",
-    sectors: ["Oil & Gas", "Energy"],
-    permId: "4295861685",
-    subsidiaries: [
-      "Shell Oil Company",
-      "Shell International Trading and Shipping",
-      "BG Group Limited",
-    ],
-  },
-  {
-    ticker: "BP",
-    name: "BP p.l.c.",
-    country: "United Kingdom",
-    countryCode: "GB",
-    sectors: ["Oil & Gas", "Energy"],
-    permId: "4295402095",
-    subsidiaries: [
-      "BP America Inc.",
-      "BP Exploration Operating Company Ltd.",
-      "Castrol Limited",
-    ],
-  },
-  {
-    ticker: "CVX",
-    name: "Chevron Corporation",
-    country: "United States",
-    countryCode: "US",
-    sectors: ["Oil & Gas", "Energy"],
-    permId: "4295904689",
-    subsidiaries: [
-      "Chevron U.S.A. Inc.",
-      "Texaco Inc.",
-      "Chevron Phillips Chemical Company LLC",
-    ],
-  },
-  {
-    ticker: "XOM",
-    name: "ExxonMobil Corporation",
-    country: "United States",
-    countryCode: "US",
-    sectors: ["Oil & Gas", "Energy"],
-    permId: "4295899836",
-    subsidiaries: [
-      "Esso Petroleum Company Ltd.",
-      "ExxonMobil Chemical Company",
-      "XTO Energy Inc.",
-    ],
-  },
-  {
-    ticker: "WMT",
-    name: "Walmart Inc.",
-    country: "United States",
-    countryCode: "US",
-    sectors: ["Retail", "Consumer Staples"],
-    permId: "4295907296",
-    subsidiaries: [
-      "Sam's Club",
-      "Walmart Canada Corp.",
-      "Flipkart Private Limited",
-      "Asda Group Limited",
-    ],
-  },
-  {
-    ticker: "SAMSUNG",
-    name: "Samsung Electronics Co. Ltd.",
-    country: "South Korea",
-    countryCode: "KR",
-    sectors: ["Technology", "Semiconductors"],
-    permId: "4295897580",
-    subsidiaries: [
-      "Samsung Semiconductor Inc.",
-      "Samsung Display Co. Ltd.",
-      "Harman International Industries Inc.",
-    ],
-  },
-  {
-    ticker: "LVMH",
-    name: "LVMH Moët Hennessy Louis Vuitton SE",
-    country: "France",
-    countryCode: "FR",
-    sectors: ["Luxury Goods", "Consumer Discretionary"],
-    permId: "4295906816",
-    subsidiaries: [
-      "Louis Vuitton Malletier",
-      "Christian Dior Couture S.A.",
-      "Moët & Chandon",
-      "Sephora S.A.",
-      "Bulgari S.p.A.",
-    ],
-  },
-  {
-    ticker: "SAP",
-    name: "SAP SE",
-    country: "Germany",
-    countryCode: "DE",
-    sectors: ["Technology", "Enterprise Software"],
-    permId: "4295906819",
-    subsidiaries: [
-      "SAP America Inc.",
-      "Qualtrics International Inc.",
-      "Concur Technologies Inc.",
-    ],
-  },
-  {
-    ticker: "ASML",
-    name: "ASML Holding N.V.",
-    country: "Netherlands",
-    countryCode: "NL",
-    sectors: ["Semiconductors", "Technology"],
-    permId: "4295906833",
-    subsidiaries: ["Cymer LLC", "Brion Technologies Inc.", "HMI Holdings B.V."],
-  },
-  {
-    ticker: "BABA",
-    name: "Alibaba Group Holding Limited",
-    country: "China",
-    countryCode: "CN",
-    sectors: ["E-Commerce", "Technology"],
-    permId: "5065509496",
-    subsidiaries: [
-      "Taobao Marketplace",
-      "Tmall.com",
-      "AliExpress",
-      "Ant Group Co. Ltd.",
-      "Lazada Group",
-    ],
-  },
-  {
-    ticker: "NVO",
-    name: "Novo Nordisk A/S",
-    country: "Denmark",
-    countryCode: "DK",
-    sectors: ["Pharmaceuticals", "Healthcare"],
-    permId: "4295861396",
-    subsidiaries: [
-      "Novo Nordisk Inc.",
-      "Novo Nordisk Pharma Ltd.",
-      "Emisphere Technologies Inc.",
-    ],
-  },
-  {
-    ticker: "NOVN",
-    name: "Novartis AG",
-    country: "Switzerland",
-    countryCode: "CH",
-    sectors: ["Pharmaceuticals", "Healthcare"],
-    permId: "4295861469",
-    subsidiaries: [
-      "Sandoz International GmbH",
-      "Alcon Laboratories Inc.",
-      "Advanced Accelerator Applications S.A.",
-    ],
-  },
-  {
-    ticker: "TCEHY",
-    name: "Tencent Holdings Limited",
-    country: "China",
-    countryCode: "CN",
-    sectors: ["Technology", "Social Media"],
-    permId: "4297151714",
-    subsidiaries: [
-      "WeChat (Weixin)",
-      "Riot Games Inc.",
-      "Epic Games Inc.",
-      "Supercell Oy",
-      "Tencent Music Entertainment",
-    ],
-  },
-];
-
 const DISPLAY_LIMIT = 3;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+function toCompany(raw: Record<string, string>): Company {
+  return {
+    ...raw,
+    sectors: JSON.parse(raw.sectors ?? "[]"),
+    subsidiaries: JSON.parse(raw.subsidiaries ?? "[]"),
+  } as Company;
+}
+
 function highlight(text: string, query: string): React.ReactNode {
+  console.log(text);
+  console.log(query);
+  if (!text) return "";
   if (!query.trim()) return text;
   const idx = text.toLowerCase().indexOf(query.toLowerCase());
   if (idx === -1) return text;
@@ -374,21 +52,6 @@ function highlight(text: string, query: string): React.ReactNode {
       </mark>
       {text.slice(idx + query.length)}
     </>
-  );
-}
-
-function filterCompanies(q: string): Company[] {
-  const term = q.toLowerCase().trim();
-  if (!term) return [];
-  return MOCK_COMPANIES.filter(
-    (c) =>
-      c.ticker.toLowerCase().includes(term) ||
-      c.name.toLowerCase().includes(term) ||
-      c.country.toLowerCase().includes(term) ||
-      c.countryCode.toLowerCase().includes(term) ||
-      c.sectors.some((s) => s.toLowerCase().includes(term)) ||
-      c.permId.includes(term) ||
-      c.subsidiaries.some((s) => s.toLowerCase().includes(term)),
   );
 }
 
@@ -421,12 +84,14 @@ function ResultRow({
   query,
   active,
   onMouseEnter,
+  onMouseLeave,
   onClick,
 }: {
   company: Company;
   query: string;
   active: boolean;
   onMouseEnter: () => void;
+  onMouseLeave: () => void;
   onClick: () => void;
 }) {
   const shownSubs = company.subsidiaries.slice(0, 2);
@@ -435,12 +100,12 @@ function ResultRow({
   return (
     <div
       onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       onClick={onClick}
       style={{
         padding: "9px 18px 9px 20px",
         cursor: "pointer",
         background: active ? "rgba(16,185,129,0.06)" : "transparent",
-        borderLeft: active ? "2px solid #10b981" : "2px solid transparent",
         transition: "background 0.12s, border-color 0.12s",
       }}
     >
@@ -464,7 +129,7 @@ function ResultRow({
             transition: "color 0.12s",
           }}
         >
-          {highlight(company.name, query)}
+          {highlight(company.companyName, query)}
           <span
             style={{
               fontSize: "0.62rem",
@@ -523,7 +188,7 @@ function ResultRow({
               flexShrink: 0,
             }}
           >
-            Subs
+            Direct Subsidaries:
           </span>
           <span
             style={{
@@ -571,6 +236,7 @@ function ResultRow({
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function SearchAutocomplete() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const [activeIdx, setActiveIdx] = useState(-1);
@@ -583,10 +249,16 @@ export function SearchAutocomplete() {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRowRef = useRef<HTMLDivElement>(null);
 
-  const allResults = filterCompanies(query);
-  const shown = allResults.slice(0, DISPLAY_LIMIT);
-  const overflow = allResults.length - DISPLAY_LIMIT;
-  const isOpen = focused && query.trim().length > 0 && allResults.length > 0;
+  const { handleSearch, results } =
+    useSiteSearch<Record<string, string>>(DISPLAY_LIMIT);
+  const shown = results.map(toCompany).slice(0, DISPLAY_LIMIT);
+  const overflow = results.length - DISPLAY_LIMIT;
+  const isOpen = focused && query.trim().length > 0 && results.length > 0;
+
+  // Trigger search when query changes
+  useEffect(() => {
+    handleSearch(query);
+  }, [query]);
 
   // Reset active index when results change
   useEffect(() => {
@@ -623,7 +295,9 @@ export function SearchAutocomplete() {
     function handleClick(e: MouseEvent) {
       if (
         containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
+        !containerRef.current.contains(e.target as Node) &&
+        dropdownElRef.current &&
+        !dropdownElRef.current.contains(e.target as Node)
       ) {
         setFocused(false);
       }
@@ -650,18 +324,12 @@ export function SearchAutocomplete() {
         activeIdx >= 0 &&
         activeIdx < shown.length
       ) {
-        setQuery(shown[activeIdx].name);
+        setQuery(shown[activeIdx].companyName);
         setFocused(false);
       }
     },
     [isOpen, shown, overflow, activeIdx],
   );
-
-  const selectCompany = (c: Company) => {
-    setQuery(c.name);
-    setFocused(false);
-    inputRef.current?.blur();
-  };
 
   return (
     <div ref={containerRef} style={{ position: "relative", width: "100%" }}>
@@ -811,46 +479,46 @@ export function SearchAutocomplete() {
                   query={query}
                   active={activeIdx === i}
                   onMouseEnter={() => setActiveIdx(i)}
-                  onClick={() => selectCompany(company)}
+                  onMouseLeave={() => setActiveIdx(-1)}
+                  onClick={() => router.push(`/companies/${company.permId}`)}
                 />
               </div>
             ))}
 
             {/* Footer */}
             {overflow > 0 && (
-              <div style={{ borderTop: "1px solid rgba(16,185,129,0.12)" }}>
+              <div style={{ borderTop: "1px solid rgba(16,185,129,0.08)" }}>
                 <a
                   href="#"
                   onMouseEnter={(e) => {
                     const el = e.currentTarget;
-                    el.style.background = "#34d399";
-                    el.style.boxShadow = "0 0 24px rgba(16,185,129,0.4)";
+                    el.style.background = "rgba(16,185,129,0.06)";
+                    el.style.color = "#c3ffe7";
                   }}
                   onMouseLeave={(e) => {
                     const el = e.currentTarget;
-                    el.style.background = "#10b981";
-                    el.style.boxShadow = "none";
+                    el.style.background = "transparent";
+                    el.style.color = "#10b981";
                   }}
                   style={{
                     display: "block",
                     width: "100%",
-                    padding: "0 28px",
-                    height: "44px",
-                    lineHeight: "44px",
-                    background: "#10b981",
+                    padding: "9px 18px 9px 20px",
+                    background: "transparent",
                     fontFamily: "'DM Mono', monospace",
                     fontSize: "0.7rem",
                     fontWeight: 700,
                     letterSpacing: "0.15em",
                     textTransform: "uppercase",
-                    color: "#000",
+                    color: "#10b981",
                     textDecoration: "none",
                     textAlign: "right",
-                    transition: "background 0.2s, box-shadow 0.2s",
+                    transition: "background 0.12s, color 0.12s",
                     boxSizing: "border-box",
                   }}
+                  onClick={() => router.push("/companies")}
                 >
-                  View all {allResults.length} matches
+                  View all {results.length} matches
                 </a>
               </div>
             )}
