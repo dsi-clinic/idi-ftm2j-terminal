@@ -1,14 +1,25 @@
 // Standard library imports
 import fs from "fs";
+import { notFound } from "next/navigation";
 
-const companies = JSON.parse(
-  fs.readFileSync(process.env.INPUT_DATA_FILE_PATH || "", "utf-8"),
-);
+interface CompanyData {
+  permId: string;
+  name: string;
+  country: string;
+  countryCode: string;
+  tickers: string[];
+  subsidiaries: string[];
+  sectors: string[];
+}
 
-type Company = (typeof companies)[number];
+function loadCompanies(): CompanyData[] {
+  const filePath = process.env.INPUT_DATA_FILE_PATH;
+  if (!filePath || !fs.existsSync(filePath)) return [];
+  return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+}
 
 export async function generateStaticParams() {
-  return companies.map((c: Company) => ({ id: c.permId }));
+  return loadCompanies().map((c) => ({ id: c.permId }));
 }
 
 type CompanyPageParams = {
@@ -17,7 +28,8 @@ type CompanyPageParams = {
 
 const CompanyPage = async ({ params }: CompanyPageParams) => {
   const { id } = await params;
-  const company = companies.find((c: Company) => c.permId === id);
+  const company = loadCompanies().find((c) => c.permId === id);
+  if (!company) notFound();
 
   return (
     <article data-pagefind-body>
