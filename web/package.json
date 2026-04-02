@@ -4,8 +4,8 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
-		"build:dev": "next build && pagefind --site .next --output-path public/pagefind",
-		"build:prod": "opennextjs-cloudflare build && pagefind --site .next --output-path public/pagefind",
+		"build": "next build && pagefind --site .next --output-path public/pagefind",
+		"build:prod": "opennextjs-cloudflare build",
 		"start": "next start",
 		"lint": "next lint",
 		"deploy": "opennextjs-cloudflare deploy",
