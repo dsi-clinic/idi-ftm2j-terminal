@@ -17,9 +17,8 @@ export const useSiteSearch = <T>(
 
   useEffect(() => {
     async function load() {
-      const lib = await import(
-        /* webpackIgnore: true */ `/pagefind/pagefind.${"js"}`
-      );
+      const path = window.location.origin + "/pagefind/pagefind.js";
+      const lib = await import(/* webpackIgnore: true */ path);
       await lib.init();
       setPagefind(lib);
     }

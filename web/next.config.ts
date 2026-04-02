@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-	/* config options here */
+  outputFileTracingExcludes: {
+    "*": ["/pagefind/pagefind.js", "/pagefind/pagefind-highlight.js"],
+  },
 };
 
 export default nextConfig;
