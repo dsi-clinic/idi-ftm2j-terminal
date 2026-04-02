@@ -32,7 +32,7 @@ export const useSiteSearch = <T>(
       search.results.map((r: PagefindSearchResult) => r.data()),
     );
     const mappedResults = topResults.map((result) => result.meta as T);
-    setResults(mappedResults);
+    setResults(mappedResults.slice(0, maxResults));
   };
 
   return { handleSearch, results };
