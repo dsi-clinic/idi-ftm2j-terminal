@@ -105,26 +105,15 @@ jobs:
 
       - name: Validate build output
         run: |
-          test -d out || (echo "Build output directory 'out' not found" && exit 1)
-          PAGE_COUNT=$(find out -name '*.html' | wc -l)
-          echo "Built $PAGE_COUNT HTML pages"
-          test "$PAGE_COUNT" -gt 0 || (echo "No HTML pages found in output" && exit 1)
-        working-directory: project/web
-
-      - name: Generate Pagefind search index
-        run: pnpm exec pagefind --site out --output-path out/pagefind
-        working-directory: project/web
-
-      - name: Validate Pagefind output
-        run: |
-          test -d out/pagefind || (echo "Pagefind output directory not found" && exit 1)
-          test -f out/pagefind/pagefind.js || (echo "pagefind.js not found" && exit 1)
+          test -d .open-next || (echo "Build output directory '.open-next' not found" && exit 1)
+          test -f .open-next/worker.js || (echo "worker.js not found" && exit 1)
+          test -d .open-next/assets || (echo "Assets directory not found" && exit 1)
         working-directory: project/web
 
       - uses: actions/upload-artifact@v4
         with:
           name: static-site-${{ github.ref_name }}
-          path: project/web/out/
+          path: project/web/.open-next/
           retention-days: 1
 
   deploy:
@@ -151,7 +140,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: static-site-${{ github.ref_name }}
-          path: project/web/out/
+          path: project/web/.open-next/
 
       - name: Deploy to Cloudflare Workers
         run: pnpm deploy -- --env ${{ env.ENVIRONMENT }}
