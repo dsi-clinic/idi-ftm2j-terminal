@@ -18,6 +18,8 @@ function loadCompanies(): CompanyData[] {
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return loadCompanies().map((c) => ({ id: c.permId }));
 }
