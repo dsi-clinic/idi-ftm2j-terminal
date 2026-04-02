@@ -8,8 +8,9 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "web",
+	"name": "app",
 	"main": ".open-next/worker.js",
+	"preview_urls": true,
 	"compatibility_date": "2025-09-27",
 	"compatibility_flags": [
 		"nodejs_compat",
@@ -29,11 +30,29 @@
 			// Self-reference service binding, the service name must match the worker name
 			// see https://opennext.js.org/cloudflare/caching
 			"binding": "WORKER_SELF_REFERENCE",
-			"service": "web"
+			"service": "app"
 		}
 	],
 	"observability": {
 		"enabled": true
+	},
+	"env": {
+		"dev": {
+			"services": [
+				{
+					"binding": "WORKER_SELF_REFERENCE",
+					"service": "app-dev"
+				}
+			]
+		},
+		"prod": {
+			"services": [
+				{
+					"binding": "WORKER_SELF_REFERENCE",
+					"service": "app-prod"
+				}
+			]
+		}
 	}
 	/**
 	 * Smart Placement

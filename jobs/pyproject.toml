@@ -1,7 +1,10 @@
 [project]
 name = "jobs"
 version = "0.1.0"
-description = "Add your description here"
+description = "Scripts used to build the dataset for the static web application."
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "numpy>=2.4.3",
+    "pandas>=3.0.1",
+]

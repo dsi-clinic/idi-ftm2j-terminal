@@ -2,8 +2,9 @@
 
 import { useRef } from "react";
 import { useNetworkCanvas } from "../hooks/use-network-canvas";
-import { SkylineSVG } from "./skyline-svg";
+import { ImageBanner } from "./image-banner";
 import { SearchAutocomplete } from "./search-autocomplete";
+import { NetworkHeading } from "./network-heading";
 
 const STATS = [
   { num: "4.2M+", label: "SEC documents indexed" },
@@ -16,11 +17,11 @@ export function Hero() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useNetworkCanvas(canvasRef, {
-    nodeCount: 25,
-    speed: 0.45,
+    nodeCount: 250,
+    speed: 0.25,
     linkDist: 300,
     mouseDist: 200,
-    edgeAlpha: 0.4,
+    edgeAlpha: 0.2,
     vignette: ["rgba(0,0,0,0)", "rgba(0,0,0,0.75)"],
   });
 
@@ -29,7 +30,7 @@ export function Hero() {
       className="relative w-full min-h-screen flex flex-col items-center justify-start overflow-hidden bg-black"
       style={{ padding: "120px 24px 80px" }}
     >
-      <SkylineSVG />
+      {/* <ImageBanner /> */}
 
       {/* Emerald tint */}
       <div
@@ -37,7 +38,7 @@ export function Hero() {
         style={{
           zIndex: 2,
           background:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(2,20,14,0.35) 40%, rgba(54, 54, 54, 0.55) 100%), radial-gradient(ellipse at 50% 60%, rgba(16,185,129,0.08) 0%, transparent 70%)",
+            "linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(2,20,14,0.35) 40%, rgba(8, 7, 7, 0.55) 100%), radial-gradient(ellipse at 50% 60%, rgba(16,185,129,0.08) 0%, transparent 70%)",
         }}
       />
 
@@ -54,7 +55,7 @@ export function Hero() {
         style={{
           zIndex: 4,
           background:
-            "repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px)",
+            "repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0, 0, 0, 0.61) 3px, rgba(0,0,0,0.18) 4px)",
         }}
       />
 
@@ -81,6 +82,9 @@ export function Hero() {
         </span>
 
         {/* Title */}
+        {/* <NetworkHeading
+          style={{ animation: "fadeSlideDown 0.9s 0.1s ease both" }}
+        /> */}
         <h1
           style={{
             fontFamily: "'Bebas Neue', sans-serif",
@@ -108,16 +112,18 @@ export function Hero() {
 
         {/* Tagline */}
         <p
-          className="font-bold"
+          className="font-extrabold uppercase"
           style={{
             fontFamily: "'DM Mono', monospace",
             fontSize: "clamp(0.75rem, 1.5vw, 0.95rem)",
-            color: "rgba(129, 245, 195, 0.55)",
+            // color: "white",
+            color: "rgba(129, 245, 195, 0.8)",
             letterSpacing: "0.06em",
             animation: "fadeSlideDown 1s 0.2s ease both",
           }}
         >
-          Trace the investment and supply chains of publicly-traded companies.
+          Trace the investors, suppliers, and subsidiaries of publicly-traded
+          companies.
           <br />
           Uncover pressure points to supercharge human rights advocacy.
         </p>

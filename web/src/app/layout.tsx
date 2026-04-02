@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Bebas_Neue, Syne, DM_Mono } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Bebas_Neue,
+  Syne,
+  DM_Mono,
+  Heebo,
+} from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,6 +40,13 @@ const dmMono = DM_Mono({
   display: "swap",
 });
 
+const heebo = Heebo({
+  variable: "--font-heebo",
+  subsets: ["latin"],
+  weight: ["400", "600", "700", "800"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "FTM2J Terminal | Inclusive Development International",
   description:
@@ -47,7 +61,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} ${syne.variable} ${dmMono.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} ${syne.variable} ${dmMono.variable} ${heebo.variable}`}
     >
       <head>
         <link

@@ -21,7 +21,7 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - name: Checkout Repo 
+      - name: Checkout Repo
         uses: actions/checkout@v6
         with:
           path: project
@@ -46,11 +46,12 @@ jobs:
         run: uv run python generate_data.py
         working-directory: project/jobs
         env:
-          INPUT_DATA_DIR: project/${{ vars.INPUT_DATA_DIR }}
-          OUTPUT_DATA_DIR: project/${{ vars.OUTPUT_DATA_DIR }}
-          OUTPUT_FILE_NAME: ${{ vars.OUTPUT_FILE_NAME }}
+          RAW_COMPANIES_FILE_PATH: project/${{ vars.INPUT_DATA_DIR }}/${{ vars.RAW_COMPANIES_FILE_NAME }}
+          COUNTRY_CODES_FILE_PATH: project/${{ vars.INPUT_DATA_DIR }}/${{ vars.COUNTRY_CODES_FILE_NAME }}
+          COMPANY_EXTRAS_FILE_PATH: project/${{ vars.INPUT_DATA_DIR }}/${{ vars.COMPANY_EXTRAS_FILE_NAME }}
+          OUTPUT_FILE_PATH: project/${{ vars.OUTPUT_DATA_DIR }}/${{ vars.OUTPUT_FILE_NAME }}
 
-      - name: Cache dataset 
+      - name: Cache dataset
         uses: actions/upload-artifact@v4
         with:
           name: site-data-${{ github.ref_name }}
@@ -73,7 +74,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -93,10 +94,10 @@ jobs:
           path: project/${{ vars.OUTPUT_DATA_DIR }}/${{ vars.OUTPUT_FILE_NAME }}
 
       - name: Build static website
-        run: pnpm build
+        run: pnpm build:prod
         working-directory: project/web
         env:
-          DATA_FILE_PATH: project/${{ vars.OUTPUT_DATA_DIR }}/${{ vars.OUTPUT_FILE_NAME }}
+          INPUT_DATA_FILE_PATH: project/${{ vars.OUTPUT_DATA_DIR }}/${{ vars.OUTPUT_FILE_NAME }}
 
       - name: Validate build output
         run: |
@@ -131,13 +132,25 @@ jobs:
         with:
           path: project
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: project/web
+
       - uses: actions/download-artifact@v4
         with:
           name: static-site-${{ github.ref_name }}
           path: project/web/out/
 
       - name: Deploy to Cloudflare Workers
-        run: npx wrangler@^4.34.0 deploy --env ${{ env.ENVIRONMENT }}
+        run: pnpm deploy -- --env ${{ env.ENVIRONMENT }}
         working-directory: project/web
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

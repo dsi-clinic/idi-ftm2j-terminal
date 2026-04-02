@@ -18,19 +18,20 @@ type CompanyPageParams = {
 const CompanyPage = async ({ params }: CompanyPageParams) => {
   const { id } = await params;
   const company = companies.find((c: Company) => c.permId === id);
+
   return (
     <article data-pagefind-body>
       <div data-pagefind-meta="permId">{company.permId}</div>
-      <div data-pagefind-meta="ticker">{company.ticker}</div>
       <div data-pagefind-meta="companyName" data-pagefind-weight="2.0">
         {company.name}
       </div>
       <div data-pagefind-meta="countryName">{company.country}</div>
       <div data-pagefind-meta="countryCode">{company.countryCode}</div>
-      <div data-pagefind-meta="subsidiaries">{JSON.stringify(company.subsidiaries)}</div>
-      <div>{company.subsidiaries.join(" ")}</div>
+      <div data-pagefind-meta="tickers">{JSON.stringify(company.tickers)}</div>
+      <div data-pagefind-meta="subsidiaries">
+        {JSON.stringify(company.subsidiaries)}
+      </div>
       <div data-pagefind-meta="sectors">{JSON.stringify(company.sectors)}</div>
-      <div>{company.sectors.join(" ")}</div>
     </article>
   );
 };

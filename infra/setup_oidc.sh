@@ -8,7 +8,7 @@ set -euo pipefail
 #  assume via OIDC (no long-lived credentials).
 # ─────────────────────────────────────────────
 
-REGION="us-east-1"
+REGION="us-east-2"
 GITHUB_OIDC_URL="https://token.actions.githubusercontent.com"
 GITHUB_OIDC_HOST="token.actions.githubusercontent.com"
 
@@ -35,8 +35,8 @@ fi
 GITHUB_ORG=$(echo "$GITHUB_REPO" | cut -d'/' -f1)
 GITHUB_REPO_NAME=$(echo "$GITHUB_REPO" | cut -d'/' -f2)
 
-read -rp "Enter the IAM role name to create [default: GitHubActionsS3BucketReaderRole]: " ROLE_NAME
-ROLE_NAME="${ROLE_NAME:-GitHubActionsS3BucketReaderRole}"
+read -rp "Enter the IAM role name to create [default: ftm2j-idi-dev-github-s3-read]: " ROLE_NAME
+ROLE_NAME="${ROLE_NAME:-ftm2j-idi-dev-github-s3-read}"
 
 echo ""
 echo "── Configuration Summary ──────────────────────────────"
@@ -146,7 +146,7 @@ EOF
 
 aws iam put-role-policy \
   --role-name "$ROLE_NAME" \
-  --policy-name "GitHubActionAccessPolicy" \
+  --policy-name "ftm2j-idi-dev-github-s3-read" \
   --policy-document "$GITHUB_ACTION_POLICY"
 
 echo "    ✓ GitHub Actions access policy attached."

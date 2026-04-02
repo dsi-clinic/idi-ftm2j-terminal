@@ -27,7 +27,7 @@ export function useNetworkCanvas(
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
-    const COLORS = ["#10b981", "#34d399", "#6ee7b7"];
+    const COLORS = ["#10b981", "#e4ede9", "#6ee7b7"];
     const {
       nodeCount = 45,
       speed = 0.35,
@@ -92,7 +92,7 @@ export function useNetworkCanvas(
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(16,185,129,${(1 - dist / linkDist) * edgeAlpha})`;
+            ctx.strokeStyle = `rgba(216,185,129,${(1 - dist / linkDist) * edgeAlpha})`;
             ctx.lineWidth = 1.6;
             ctx.stroke();
           }
@@ -114,7 +114,7 @@ export function useNetworkCanvas(
       for (const n of nodes) {
         if (n.glow) {
           const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 7);
-          g.addColorStop(0, "rgba(110,231,179,0.35)");
+          g.addColorStop(0, "rgba(235, 241, 238, 0.35)");
           g.addColorStop(1, "rgba(110,231,179,0)");
           ctx.beginPath();
           ctx.arc(n.x, n.y, n.r * 7, 0, Math.PI * 2);

@@ -38,7 +38,7 @@ function FooterLink({ label }: FooterLinkProps) {
       style={{
         textDecoration: "none",
         fontSize: "0.78rem",
-        color: hovered ? "#6ee7b7" : "rgba(110,231,179,0.55)",
+        color: hovered ? "#6ee7b7" : "#86efac",
         letterSpacing: "0.02em",
         display: "inline-flex",
         alignItems: "center",
@@ -49,7 +49,7 @@ function FooterLink({ label }: FooterLinkProps) {
     >
       <span
         style={{
-          color: hovered ? "#10b981" : "#065f46",
+          color: hovered ? "#10b981" : "#10b981",
           fontSize: "1rem",
           transition: "color 0.2s, transform 0.2s",
           transform: hovered ? "translateX(3px)" : "translateX(0)",
@@ -92,7 +92,7 @@ function SocialBtn({ path }: SocialBtnProps) {
         style={{
           width: 14,
           height: 14,
-          fill: hovered ? "#34d399" : "rgba(52,211,153,0.55)",
+          fill: hovered ? "#34d399" : "#34d399",
           transition: "fill 0.2s",
         }}
       >
@@ -116,7 +116,7 @@ export function Footer() {
   return (
     <footer
       className="relative overflow-hidden"
-      style={{ background: "#000000", fontFamily: "'DM Mono', monospace" }}
+      style={{ background: "#080a08", fontFamily: "'DM Mono', monospace" }}
     >
       {/* Top border glow */}
       <div
@@ -160,7 +160,7 @@ export function Footer() {
           <p
             style={{
               fontSize: "0.72rem",
-              color: "rgba(52,211,153,0.55)",
+              color: "rgba(52,211,153,0.9)",
               lineHeight: 1.7,
               maxWidth: 240,
               letterSpacing: "0.03em",
@@ -203,7 +203,7 @@ export function Footer() {
               style={{
                 fontFamily: "'Syne', sans-serif",
                 fontWeight: 700,
-                fontSize: "0.65rem",
+                fontSize: "0.7rem",
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
                 color: "#10b981",
@@ -218,7 +218,7 @@ export function Footer() {
               <p
                 style={{
                   fontSize: "0.7rem",
-                  color: "rgba(110,231,179,0.55)",
+                  color: "rgb(134, 239, 172)",
                   lineHeight: 1.8,
                   letterSpacing: "0.03em",
                 }}
@@ -266,7 +266,7 @@ export function Footer() {
         <span
           style={{
             fontSize: "0.68rem",
-            color: "rgba(52,211,153,0.75)",
+            color: "#34d399",
             letterSpacing: "0.06em",
           }}
         >
@@ -288,7 +288,7 @@ export function Footer() {
               href="#"
               style={{
                 fontSize: "0.65rem",
-                color: "rgba(52,211,153,0.7)",
+                color: "#34d399",
                 textDecoration: "none",
                 letterSpacing: "0.08em",
                 transition: "color 0.2s",
@@ -297,8 +297,7 @@ export function Footer() {
                 ((e.target as HTMLAnchorElement).style.color = "#34d399")
               }
               onMouseLeave={(e) =>
-                ((e.target as HTMLAnchorElement).style.color =
-                  "rgba(52,211,153,0.7)")
+                ((e.target as HTMLAnchorElement).style.color = "#34d399")
               }
             >
               {l}

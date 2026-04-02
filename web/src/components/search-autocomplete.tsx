@@ -9,13 +9,15 @@ import { useRouter } from "next/navigation";
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Company {
-  ticker: string;
+  permId: string;
+  lei: string;
   companyName: string;
   countryName: string;
   countryCode: string;
+  tickers: string[];
   sectors: string[];
-  permId: string;
   subsidiaries: string[];
+  url: string;
 }
 
 const DISPLAY_LIMIT = 3;
@@ -25,14 +27,15 @@ const DISPLAY_LIMIT = 3;
 function toCompany(raw: Record<string, string>): Company {
   return {
     ...raw,
+    tickers: JSON.parse(raw.tickers ?? "[]"),
     sectors: JSON.parse(raw.sectors ?? "[]"),
     subsidiaries: JSON.parse(raw.subsidiaries ?? "[]"),
   } as Company;
 }
 
 function highlight(text: string, query: string): React.ReactNode {
-  console.log(text);
-  console.log(query);
+  console.log("Text:", text);
+  console.log("Query:", query);
   if (!text) return "";
   if (!query.trim()) return text;
   const idx = text.toLowerCase().indexOf(query.toLowerCase());
@@ -96,6 +99,7 @@ function ResultRow({
 }) {
   const shownSubs = company.subsidiaries.slice(0, 2);
   const extraSubs = company.subsidiaries.length - shownSubs.length;
+  console.log(company);
 
   return (
     <div
@@ -130,31 +134,48 @@ function ResultRow({
           }}
         >
           {highlight(company.companyName, query)}
-          <span
-            style={{
-              fontSize: "0.62rem",
-              color: "rgba(52,211,153,0.38)",
-              marginLeft: 6,
-            }}
-          >
-            ({highlight(company.countryCode, query)})
-          </span>
+          {company.countryCode && (
+            <span
+              style={{
+                fontSize: "0.62rem",
+                color: "rgba(52,211,153,0.38)",
+                marginLeft: 6,
+              }}
+            >
+              ({highlight(company.countryCode, query)})
+            </span>
+          )}
         </span>
 
-        <span
+        <div
           style={{
-            fontFamily: "'DM Mono', monospace",
-            fontSize: "0.72rem",
-            letterSpacing: "0.12em",
-            color: active ? "#34d399" : "#10b981",
-            textShadow: active ? "0 0 10px rgba(52,211,153,0.45)" : "none",
-            transition: "color 0.12s, text-shadow 0.12s",
-            whiteSpace: "nowrap",
+            display: "flex",
+            gap: 6,
             flexShrink: 0,
           }}
         >
-          {highlight(company.ticker, query)}
-        </span>
+          {company.tickers.map((ticker) => (
+            <span
+              key={ticker}
+              style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: "0.72rem",
+                letterSpacing: "0.12em",
+                color: active ? "#34d399" : "#10b981",
+                textShadow: active ? "0 0 10px rgba(52,211,153,0.45)" : "none",
+                transition: "color 0.12s, text-shadow 0.12s",
+                whiteSpace: "nowrap",
+                border: "1px solid",
+                borderColor: active
+                  ? "rgba(52,211,153,0.4)"
+                  : "rgba(16,185,129,0.25)",
+                padding: "1px 6px",
+              }}
+            >
+              {highlight(ticker, query)}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* ── Subsidiary row ── */}
