@@ -42,6 +42,9 @@ jobs:
         run: uv sync
         working-directory: project/jobs
 
+      - name: Create output directory
+        run: mkdir -p ${{ github.workspace }}/project/${{ vars.OUTPUT_DATA_DIR }}
+
       - name: Generate JSON dataset for website
         run: uv run python build_dataset.py
         working-directory: project/jobs
