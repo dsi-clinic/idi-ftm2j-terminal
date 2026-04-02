@@ -276,9 +276,10 @@ export function SearchAutocomplete() {
   const overflow = results.length - DISPLAY_LIMIT;
   const isOpen = focused && query.trim().length > 0 && results.length > 0;
 
-  // Trigger search when query changes
+  // Trigger search when query changes (debounced)
   useEffect(() => {
-    handleSearch(query);
+    const timer = setTimeout(() => handleSearch(query), 200);
+    return () => clearTimeout(timer);
   }, [query]);
 
   // Reset active index when results change

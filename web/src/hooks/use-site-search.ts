@@ -29,10 +29,9 @@ export const useSiteSearch = <T>(
     if (!pagefind || !query) return;
     const search = await pagefind.search(query);
     const topResults = await Promise.all(
-      search.results.map((r: PagefindSearchResult) => r.data()),
+      search.results.slice(0, maxResults).map((r: PagefindSearchResult) => r.data()),
     );
-    const mappedResults = topResults.map((result) => result.meta as T);
-    setResults(mappedResults.slice(0, maxResults));
+    setResults(topResults.map((result) => result.meta as T));
   };
 
   return { handleSearch, results };
