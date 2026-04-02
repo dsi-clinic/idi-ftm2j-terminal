@@ -18,6 +18,7 @@ function loadCompanies(): CompanyData[] {
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
 }
 
+export const dynamic = "force-static";
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
