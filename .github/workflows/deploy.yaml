@@ -113,7 +113,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: static-site-${{ github.ref_name }}
-          path: project/web/.open-next/
+          path: ${{ github.workspace }}/project/web/.open-next/
           retention-days: 1
 
   deploy:
@@ -140,7 +140,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: static-site-${{ github.ref_name }}
-          path: project/web/.open-next/
+          path: ${{ github.workspace }}/project/web/.open-next/
 
       - name: Deploy to Cloudflare Workers
         run: pnpm deploy -- --env ${{ env.ENVIRONMENT }}
