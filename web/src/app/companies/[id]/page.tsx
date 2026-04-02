@@ -14,6 +14,7 @@ interface CompanyData {
 
 function loadCompanies(): CompanyData[] {
   const filePath = process.env.INPUT_DATA_FILE_PATH;
+  console.log(filePath);
   if (!filePath || !fs.existsSync(filePath)) return [];
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
 }
@@ -32,7 +33,14 @@ type CompanyPageParams = {
 const CompanyPage = async ({ params }: CompanyPageParams) => {
   const { id } = await params;
   const company = loadCompanies().find((c) => c.permId === id);
-  if (!company) notFound();
+  if (!company) {
+    return (
+      <div>
+        {process.env.INPUT_DATA_FILE_PATH}
+        {JSON.stringify(loadCompanies())}
+      </div>
+    );
+  }
 
   return (
     <article data-pagefind-body>
