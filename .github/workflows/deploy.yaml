@@ -98,7 +98,7 @@ jobs:
           path: project/${{ vars.OUTPUT_DATA_DIR }}/${{ vars.OUTPUT_FILE_NAME }}
 
       - name: Build static website
-        run: pnpm build:prod
+        run: pnpm run build:prod
         working-directory: project/web
         env:
           INPUT_DATA_FILE_PATH: ${{ github.workspace }}/project/${{ vars.OUTPUT_DATA_DIR }}/${{ vars.OUTPUT_FILE_NAME }}
