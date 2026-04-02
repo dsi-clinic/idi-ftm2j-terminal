@@ -115,6 +115,7 @@ jobs:
           name: static-site-${{ github.ref_name }}
           path: ${{ github.workspace }}/project/web/.open-next/
           retention-days: 1
+          include-hidden-files: true
 
   deploy:
     needs: build
