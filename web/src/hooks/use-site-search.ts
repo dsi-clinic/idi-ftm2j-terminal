@@ -17,10 +17,9 @@ export const useSiteSearch = <T>(
 
   useEffect(() => {
     async function load() {
-      const lib = await import(
-        // @ts-expect-error
-        /* webpackIgnore: true */ "/pagefind/pagefind.js"
-      );
+      const path = "/pagefind/pagefind.js";
+      // @ts-expect-error - Pagefind is generated post-build
+      const lib = await import(/* webpackIgnore: true */ path);
       await lib.init();
       setPagefind(lib);
     }
